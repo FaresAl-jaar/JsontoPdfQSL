@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "tjMVbGE6sinEdaIfAZxPbjAKd0x7gxY9LeTAuZcR+eI=",
+  "Source": "JsonToPdf",
+  "BasePath": "_content/JsonToPdf",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "JsonToPdf\\wwwroot",
+      "Source": "JsonToPdf",
+      "ContentRoot": "C:\\Users\\f.al-jaar\\source\\repos\\JsonToPdf\\JsonToPdf\\wwwroot\\",
+      "BasePath": "_content/JsonToPdf",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\f.al-jaar\\source\\repos\\JsonToPdf\\JsonToPdf\\wwwroot\\images\\logo.png",
+      "SourceId": "JsonToPdf",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\f.al-jaar\\source\\repos\\JsonToPdf\\JsonToPdf\\wwwroot\\",
+      "BasePath": "_content/JsonToPdf",
+      "RelativePath": "images/logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo.png"
+    }
+  ]
+}

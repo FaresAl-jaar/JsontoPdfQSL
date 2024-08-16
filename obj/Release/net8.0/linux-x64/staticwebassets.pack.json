@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\f.al-jaar\\source\\repos\\JsonToPdf\\JsonToPdf\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\linux-x64\\staticwebassets\\msbuild.JsonToPdf.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\linux-x64\\staticwebassets\\msbuild.build.JsonToPdf.props",
+      "PackagePath": "build\\JsonToPdf.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\linux-x64\\staticwebassets\\msbuild.buildMultiTargeting.JsonToPdf.props",
+      "PackagePath": "buildMultiTargeting\\JsonToPdf.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\linux-x64\\staticwebassets\\msbuild.buildTransitive.JsonToPdf.props",
+      "PackagePath": "buildTransitive\\JsonToPdf.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

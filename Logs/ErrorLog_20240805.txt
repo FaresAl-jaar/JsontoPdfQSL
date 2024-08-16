@@ -1,0 +1,10 @@
+2024-08-05 13:05:13 - Error: Failed to parse JSON data
+Additional Info: Error converting JSON to PDF
+Stack Trace:    at JsonToPdf.DynamicJsonToPdfConverter.ConvertJsonToPdf(String jsonString) in C:\Users\f.al-jaar\source\repos\JsonToPdf\JsonToPdf\DynamicJsonToPdfConverter.cs:line 34
+   at JsonToPdf.Controllers.PdfController.ConvertJsonToPdf(IFormFile file) in C:\Users\f.al-jaar\source\repos\JsonToPdf\JsonToPdf\JsonToPdf.Controllers.cs:line 65
+
+2024-08-05 13:05:36 - Error: Failed to parse JSON data
+Additional Info: Error converting JSON to PDF
+Stack Trace:    at JsonToPdf.DynamicJsonToPdfConverter.ConvertJsonToPdf(String jsonString) in C:\Users\f.al-jaar\source\repos\JsonToPdf\JsonToPdf\DynamicJsonToPdfConverter.cs:line 34
+   at JsonToPdf.Controllers.PdfController.ConvertJsonToPdf(IFormFile file) in C:\Users\f.al-jaar\source\repos\JsonToPdf\JsonToPdf\JsonToPdf.Controllers.cs:line 65
+
