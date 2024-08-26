@@ -1,34 +1,34 @@
-# Verwenden des .NET Core ASP.NET Runtime-Bildes für die Basis
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-# Verwenden des .NET Core SDK-Bildes für den Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY JsonToPdf/JsonToPdf.csproj .
+
+COPY ["JsonToPdf.csproj", "./"]
 RUN dotnet restore "JsonToPdf.csproj"
 
 COPY . .
+RUN dotnet build "JsonToPdf.csproj" -c Release -o /app/build
 
-# Stellen Sie sicher, dass das Verzeichnis für den Build-Prozess existiert
-RUN mkdir -p /app/build && chmod -R 777 /app/build
+FROM build AS publish
+RUN dotnet publish "JsonToPdf.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Führen Sie den Build- und Publish-Befehl als root-Benutzer aus
-USER root
-RUN dotnet publish "JsonToPdf.csproj" -c Release -o /app/build /p:UseAppHost=false
-
-# Finales Image, das das veröffentlichte Projekt enthält
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=build /app/build .
-COPY JsonToPdf/wwwroot/images/logo.png /app/wwwroot/images/logo.png
+COPY --from=publish /app/publish .
 
-# Setzen der Umgebungsvariablen
+RUN mkdir -p /app/data /app/wwwroot/images
+COPY wwwroot/images/logo.png /app/wwwroot/images/logo.png
+
+RUN apt-get update && apt-get install -y openssl
+RUN openssl req -x509 -newkey rsa:4096 -keyout /app/cert.key -out /app/cert.crt -days 365 -nodes -subj "/CN=localhost"
+RUN openssl pkcs12 -export -out /app/cert.pfx -inkey /app/cert.key -in /app/cert.crt -passout pass:YourSecurePassword
+
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS="http://+:8081;https://+:8444"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/cert.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=YourSecurePassword
 
-# Erstellen Sie einen nicht-root Benutzer
+EXPOSE 8081
+EXPOSE 8444
+
 RUN adduser --disabled-password --gecos '' appuser
 USER appuser
 
