@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace JsonToPdf
 {
@@ -32,7 +33,7 @@ namespace JsonToPdf
 
             services.AddHttpsRedirection(options =>
             {
-                options.HttpsPort = 7171;
+                options.HttpsPort = 8444;
             });
 
             services.AddDbContext<AppDbContext>(options =>
@@ -50,6 +51,14 @@ namespace JsonToPdf
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "JSON to PDF API", Version = "v1" });
             });
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.ConfigureHttpsDefaults(httpsOptions =>
+                {
+                    httpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, ILogger<Startup> logger)
@@ -65,7 +74,7 @@ namespace JsonToPdf
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "JSON to PDF API v1");
-                c.RoutePrefix = string.Empty; // Damit Swagger unter der Root-URL verfügbar ist
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();
@@ -90,19 +99,18 @@ namespace JsonToPdf
                     var externalIp = await GetExternalIp();
 
                     logger.LogInformation($"Application is accessible at:");
-                    logger.LogInformation($"- From host: http://localhost:{port}");
+                    logger.LogInformation($"- From host: {address}");
                     logger.LogInformation($"- Docker internal: http://{dockerIp}:{port}");
                     logger.LogInformation($"- Local network: http://{localIp}:{port}");
                     logger.LogInformation($"- External (if configured): http://{externalIp}:{port}");
                     logger.LogInformation($"Swagger UI is available at:");
-                    logger.LogInformation($"- From host: http://localhost:{port}/index.html");
+                    logger.LogInformation($"- From host: {address}/index.html");
                     logger.LogInformation($"- Docker internal: http://{dockerIp}:{port}/index.html");
                     logger.LogInformation($"- Local network: http://{localIp}:{port}/index.html");
                     logger.LogInformation($"- External (if configured): http://{externalIp}:{port}/index.html");
                 }
             });
         }
-
 
         private void EnsureDatabaseCreated(IApplicationBuilder app)
         {
@@ -119,17 +127,15 @@ namespace JsonToPdf
                 using var serviceScope = app.ApplicationServices.CreateScope();
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // Überprüfen, ob die Datenbankverbindung hergestellt werden kann
                 if (dbContext.Database.CanConnect())
                 {
-                    Console.WriteLine("Datenbankverbindung erfolgreich hergestellt.");
+                    Console.WriteLine("Database connection successful.");
                 }
                 else
                 {
-                    Console.WriteLine("Fehler beim Herstellen der Datenbankverbindung.");
+                    Console.WriteLine("Error connecting to the database.");
                 }
 
-                // Sicherstellen, dass die Datenbank erstellt wurde
                 dbContext.Database.EnsureCreated();
                 Console.WriteLine("Database created successfully.");
             }
@@ -141,11 +147,20 @@ namespace JsonToPdf
 
         private string GetDatabasePath()
         {
-            string basePath = _env.IsDevelopment()
-                ? Configuration["DatabasePath:Local"]
-                : Configuration["DatabasePath:Docker"];
+            string basePath;
+            if (_env.IsDevelopment())
+            {
+                basePath = Configuration["DatabasePath:Local"];
+                Console.WriteLine("Using Local Database Path: " + basePath);
+            }
+            else
+            {
+                basePath = Configuration["DatabasePath:Docker"];
+                Console.WriteLine("Using Docker Database Path: " + basePath);
+            }
 
             string dbName = Configuration.GetConnectionString("DefaultConnection");
+            Console.WriteLine("Database Name: " + dbName);
 
             return Path.Combine(basePath, dbName);
         }
